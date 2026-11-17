@@ -1,0 +1,52 @@
+name: TTPoolAssist
+options:
+  bundleIdPrefix: com.yg
+  deploymentTarget:
+    iOS: "15.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    IPHONEOS_DEPLOYMENT_TARGET: "15.0"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "-"
+
+targets:
+
+  # ---------------- 主 App ----------------
+  TTPoolAssist:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+      - path: Shared
+    info:
+      path: App/Info.plist
+    entitlements:
+      path: App/App.entitlements
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.yg.ttpoolassist
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        TARGETED_DEVICE_FAMILY: "1,2"
+    scheme:
+      testTargets: []
+    dependencies:
+      - target: TTBroadcast
+
+  # ---------------- 广播上传扩展 ----------------
+  TTBroadcast:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: BroadcastExtension
+      - path: Shared
+    info:
+      path: BroadcastExtension/Info.plist
+    entitlements:
+      path: BroadcastExtension/Ext.entitlements
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.yg.ttpoolassist.broadcast
