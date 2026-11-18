@@ -1,6 +1,7 @@
 import SwiftUI
 import ReplayKit
 import AVKit
+import QuartzCore
 
 // MARK: - App 入口
 

@@ -24,17 +24,25 @@ enum TableDetector {
     static let refFeltY1: CGFloat = 0.780
     static let refBallDiameterOverFeltWidth: CGFloat = 0.0533
 
-    /// 把 CGImage 解成 RGB888 缓冲
+    /// 把 CGImage 解成 RGBA8888 缓冲
     static func pixelBuffer(from cg: CGImage) -> (data: [UInt8], w: Int, h: Int)? {
         let w = cg.width, h = cg.height
         guard w > 0, h > 0 else { return nil }
         var buf = [UInt8](repeating: 0, count: w * h * 4)
-        guard let ctx = CGContext(data: &buf, width: w, height: h,
-                                  bitsPerComponent: 8, bytesPerRow: w * 4,
-                                  space: CGColorSpaceCreateDeviceRGB(),
-                                  bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
-        else { return nil }
-        ctx.draw(cg, in: CGRect(x: 0, y: 0, width: w, height: h))
+        let ok: Bool = buf.withUnsafeMutableBytes { raw in
+            guard let base = raw.baseAddress,
+                  let ctx = CGContext(data: base,
+                                      width: w,
+                                      height: h,
+                                      bitsPerComponent: 8,
+                                      bytesPerRow: w * 4,
+                                      space: CGColorSpaceCreateDeviceRGB(),
+                                      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+            else { return false }
+            ctx.draw(cg, in: CGRect(x: 0, y: 0, width: w, height: h))
+            return true
+        }
+        guard ok else { return nil }
         return (buf, w, h)
     }
 
