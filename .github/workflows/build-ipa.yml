@@ -12,15 +12,23 @@ on:
 
 jobs:
   build:
-    runs-on: macos-14
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Show runner info
+        run: |
+          sw_vers
+          xcodebuild -version
+          echo "arch: $(uname -m)"
 
       - name: Install XcodeGen
         run: brew install xcodegen
 
       - name: Generate Xcode project
-        run: xcodegen generate
+        run: |
+          xcodegen generate
+          xcodebuild -project TTPoolAssist.xcodeproj -list
 
       - name: Build (unsigned)
         run: |
